@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Agregar Cuota</h2>
+<form method="post">
+    <label>Monto:</label>
+    <input type="number" name="monto" required>
+    <label>Fecha de Vencimiento:</label>
+    <input type="date" name="fecha_vencimiento" required>
+    <button type="submit">Agregar</button>
+</form>
+{% endblock %}

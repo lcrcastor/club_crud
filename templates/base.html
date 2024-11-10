@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Club de Socios JB</title>
+</head>
+<body>
+    <header>
+        <h1>Club de Socios (CSDJB)</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Inicio</a></li>
+                <li><a href="{{ url_for('listar_socios') }}">Socios</a></li>
+                <li><a href="{{ url_for('listar_cuotas') }}">Cuotas_lista</a></li>
+                <li><a href="{{ url_for('contacto') }}">Contacto</a></li> <!-- Enlace a contacto -->
+                <li><a href="{{ url_for('cargar_csv') }}">Cargar csv </a></li> <!-- Enlace a cargar_csv -->
+            </ul>
+        </nav>
+        
+    </header>
+    <!-- Bloque que otras plantillas pueden sobrescribir -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Club de Socios JB</p>
+    </footer>
+</body>
+</html>

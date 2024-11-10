@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Cuotas de {{ socio.nombre }}</h2>
+<a href="{{ url_for('agregar_cuota', id_socio=socio.id_socio) }}">Agregar Cuota</a>
+<ul>
+    {% for cuota in socio.cuotas %}
+        <li>
+            {{ cuota.monto }} - {{ cuota.fecha_vencimiento }} - 
+            {% if cuota.pagada %}Pagada{% else %}Pendiente{% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

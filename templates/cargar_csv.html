@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cargar Datos desde un Archivo CSV</h2>
+<form method="post" enctype="multipart/form-data" action="{{ url_for('cargar_csv') }}">
+    <label for="archivo_csv">Selecciona un archivo CSV:</label>
+    <input type="file" id="archivo_csv" name="archivo_csv" accept=".csv" required>
+    <button type="submit">Cargar Archivo</button>
+</form>
+
+{% if get_flashed_messages() %}
+    <div class="flash-messages">
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

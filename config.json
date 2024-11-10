@@ -1,0 +1,6 @@
+{
+    "DATABASE_URL": "mysql+mysqlconnector://root:rootpassword@127.0.0.1/club_database",
+    "DEBUG": true,
+    "SECRET_KEY": "your_secret_key_here",
+    "MAX_CONNECTIONS": 10
+}

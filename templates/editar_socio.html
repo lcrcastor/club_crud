@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Editar Socio</h2>
+<form method="post">
+    <label>Nombre:</label>
+    <input type="text" name="nombre" value="{{ socio.nombre }}" required>
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ socio.email }}" required>
+    <button type="submit">Guardar</button>
+</form>
+{% endblock %}

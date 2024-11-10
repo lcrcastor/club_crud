@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Lista de Socios</h2>
+<a href="{{ url_for('agregar_socio') }}">Agregar Socio</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+    </tr>
+    {% for socio in socios %}
+    <tr>
+        <td>{{ socio.id }}</td>
+        <td>{{ socio.name }}</td>
+        <td>{{ socio.email }}</td>
+        <td>{{ socio.phone }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

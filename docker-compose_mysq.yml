@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: club_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: club_database
+      MYSQL_USER: club_user
+      MYSQL_PASSWORD: club_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    user: "0:0"  # Ejecuta como root para tener permisos elevados  
+

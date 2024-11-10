@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cuotas de {{ socio.nombre }}</h2>
+<table border="1">
+    <tr>
+        <th>ID Cuota</th>
+        <th>Monto</th>
+        <th>Fecha de Vencimiento</th>
+        <th>Estado</th>
+    </tr>
+    {% for cuota in socio.cuotas %}
+    <tr>
+        <td>{{ cuota.id_cuota }}</td>
+        <td>{{ cuota.monto }}</td>
+        <td>{{ cuota.fecha_vencimiento }}</td>
+        <td>{{ "Pagada" if cuota.pagada else "Pendiente" }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
