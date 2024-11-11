@@ -27,7 +27,7 @@ Base = declarative_base()
 # Definir las clases de los modelos
 class Socio(Base):
     __tablename__ = 'socios'
-    id_socio = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     phone = Column(String(20))  # Nuevo campo para el número de teléfono

@@ -2,8 +2,9 @@ from flask import Flask
 from routes.socio_routes import socio_bp
 from routes.cuota_routes import cuota_bp
 from routes.general_routes import general_bp
-app = Flask(__name__)
 
+app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
 
 
 # Registrar los Blueprints
