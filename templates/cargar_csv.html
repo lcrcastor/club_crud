@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Cargar Datos desde un Archivo CSV</h2>
+<h2>Cargar Nomina de Socios  desde un Archivo CSV</h2>
 <form method="post" enctype="multipart/form-data" action="{{ url_for('socio.cargar_csv') }}">
     <label for="archivo_csv">Selecciona un archivo CSV:</label>
     <input type="file" id="archivo_csv" name="archivo_csv" accept=".csv" required>

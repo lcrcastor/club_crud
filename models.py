@@ -21,6 +21,11 @@ MAX_CONNECTIONS = config["MAX_CONNECTIONS"]
 # Crear el motor de base de datos
 engine = create_engine(DATABASE_URL, echo=DEBUG)
 
+
+# Crear la sesión de SQLAlchemy
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+db_session = SessionLocal()  # Instancia de sesión
+
 # Crear la base de datos declarativa
 Base = declarative_base()
 

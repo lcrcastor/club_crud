@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models import session, Socio
+from models import session, Socio, db_session
 import pandas as pd
+from sqlalchemy.exc import IntegrityError
 
 # Definir el Blueprint para la ruta de socios 
 socio_bp = Blueprint('socio', __name__)
@@ -16,10 +17,15 @@ def insertar_socios(socios_nuevos):
             phone=fila['phone']
         )
         session.add(nuevo_socio)
-    
-    session.commit()
+        try:
+            session.commit()
+        except IntegrityError:
+            # Realizar rollback si se detecta un duplicado y continuar con el siguiente
+            session.rollback()
+            flash(f'Socio con ID {fila["id"]} ya existe y no fue agregado.', 'info')
     flash("Datos del CSV procesados exitosamente", "success")
     return redirect(url_for('socio.listar_socios'))
+
 
 # Ruta para listar socios
 @socio_bp.route('/socios')
@@ -37,7 +43,7 @@ def agregar_socio():
         session.add(nuevo_socio)
         session.commit()
         return redirect(url_for('socio.listar_socios'))
-    return render_template('agregar_socio.html')
+    return render_template('socio.agregar_socio.html')
 
 # Ruta para editar un socio
 @socio_bp.route('/socio/editar/<int:id_socio>', methods=['GET', 'POST'])
@@ -48,7 +54,7 @@ def editar_socio(id_socio):
         socio.email = request.form['email']
         session.commit()
         return redirect(url_for('socio.listar_socios'))
-    return render_template('editar_socio.html', socio=socio)
+    return render_template('socio.editar_socio.html', socio=socio)
 
 # Ruta para eliminar un socio
 @socio_bp.route('/socio/eliminar/<int:id_socio>')
@@ -76,6 +82,10 @@ def cargar_csv():
             flash('El archivo CSV debe contener una columna "id".', 'error')
             return redirect(request.url)
 
+        # Remover filas duplicadas basadas en la columna 'id' en el CSV
+        datos = datos.drop_duplicates(subset=['id'])
+
+        # Reemplazar NaN con None en las columnas 'email' y 'phone'
         datos['email'] = datos['email'].apply(lambda x: None if pd.isna(x) else x)
         datos['phone'] = datos['phone'].apply(lambda x: None if pd.isna(x) else x)
 
@@ -83,29 +93,21 @@ def cargar_csv():
         socios_nuevos = []
         
         for _, fila in datos.iterrows():
-            try:
-                socio_existente = session.query(Socio).filter_by(id=fila['id']).first()
-                if socio_existente:
-                    ids_duplicados.append(fila)
-                else:
-                    socios_nuevos.append(fila)
-            except Exception as e:
-                session.rollback()  # Realiza el rollback en caso de un error
-                flash(f'Error al procesar el archivo: {str(e)}', 'error')
-                return redirect(request.url)
+            # Verificar si el socio con el mismo `id` ya existe en la base de datos
+            socio_existente = db_session.query(Socio).filter_by(id=fila['id']).first()
+            if socio_existente:
+                ids_duplicados.append(fila)
+            else:
+                socios_nuevos.append(fila)
 
+        # Informar al usuario sobre los ID duplicados encontrados
         if ids_duplicados:
-            session['socios_nuevos'] = [fila.to_dict() for fila in socios_nuevos]
-            return render_template(
-                'confirmar_csv.html',
-                ids_duplicados=ids_duplicados,
-                socios_nuevos=socios_nuevos
-            )
+            flash(f'Se encontraron {len(ids_duplicados)} IDs duplicados que no serán procesados.', 'info')
 
+        # Insertar los socios nuevos que no tienen ID duplicados en el CSV ni en la base de datos
         return insertar_socios(socios_nuevos)
 
     return render_template('cargar_csv.html')
-
 
 @socio_bp.route('/socio/confirmar_carga_csv', methods=['POST'])
 def confirmar_carga_csv():
