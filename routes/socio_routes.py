@@ -27,6 +27,7 @@ def insertar_socios(socios_nuevos):
     return redirect(url_for('socio.listar_socios'))
 
 
+
 # Ruta para listar socios
 @socio_bp.route('/socios')
 def listar_socios():
@@ -46,20 +47,37 @@ def agregar_socio():
     return render_template('socio.agregar_socio.html')
 
 # Ruta para editar un socio
-@socio_bp.route('/socio/editar/<int:id_socio>', methods=['GET', 'POST'])
-def editar_socio(id_socio):
-    socio = session.query(Socio).get(id_socio)
+@socio_bp.route('/socio/editar/<int:id>', methods=['GET', 'POST'])
+def editar_socio(id):
+    #socio = session.query.get_or_404(id)
+    socio = session.query(Socio).get(id)
     if request.method == 'POST':
-        socio.nombre = request.form['nombre']
-        socio.email = request.form['email']
-        session.commit()
-        return redirect(url_for('socio.listar_socios'))
-    return render_template('socio.editar_socio.html', socio=socio)
+        nombre = request.form['nombre']
+        email = request.form['email']
+        phone = request.form['phone']
+
+        # Validación del teléfono
+        import re
+        if not re.match(r'^\d{8}$', phone):
+            flash('Número de teléfono inválido. Formato requerido: 4567890.', 'error')
+            return render_template('editar_socio.html', socio=socio)
+
+        # Actualizar datos
+        socio.name = nombre
+        socio.email = email
+        socio.phone = phone
+        db_session.commit()
+        flash('Datos actualizados con éxito.', 'success')
+        return redirect(url_for('socio.listar_socios')) # Redirecciona a la lista de socios
+     
+    return render_template('editar_socio.html', socio=socio)
+
+
 
 # Ruta para eliminar un socio
-@socio_bp.route('/socio/eliminar/<int:id_socio>')
-def eliminar_socio(id_socio):
-    socio = session.query(Socio).get(id_socio)
+@socio_bp.route('/socio/eliminar/<int:id>')
+def eliminar_socio(id):
+    socio = session.query(Socio).get(id)
     session.delete(socio)
     session.commit()
     return redirect(url_for('socio.listar_socios'))
@@ -123,7 +141,7 @@ def confirmar_carga_csv():
     # Insertar cada socio que no fue descartado
     for socio in socios_a_insertar:
         nuevo_socio = Socio(
-            id=socio['id_socio'],
+            id=socio['id'],
             name=socio['name'],
             email=socio['email'],
             phone=socio['phone']

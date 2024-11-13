@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Movimientos de Caja</h1>
+    <a href="{{ url_for('caja.agregar_movimiento') }}">Agregar Nuevo Movimiento</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movimiento in movimientos %}
+            <tr>
+                <td>{{ movimiento.fecha.strftime('%Y-%m-%d') }}</td>
+                <td>{{ movimiento.tipo }}</td>
+                <td>{{ movimiento.descripcion }}</td>
+                <td>{{ movimiento.monto }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No hay movimientos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

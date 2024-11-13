@@ -51,6 +51,15 @@ class Cuota(Base):
     #socio = relationship("Socio", back_populates="cuotas")
 
 
+class MovimientoCaja(Base):
+    __tablename__ = 'movimientos_caja'
+    
+    id = Column(Integer, primary_key=True)
+    fecha = Column(Date, nullable=False)
+    tipo = Column(String(10), nullable=False)  # 'ingreso' o 'egreso'
+    descripcion = Column(String(255), nullable=False)
+    monto = Column(Float, nullable=False)
+
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
