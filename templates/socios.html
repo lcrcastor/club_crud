@@ -27,6 +27,9 @@
                 <td>
                     <!-- Botón de Modificar -->
                     <a href="{{ url_for('socio.editar_socio', id=socio.id) }}" class="btn btn-primary">Modificar</a>
+                    <!-- Botón alta de cuota -->
+                    <a href="{{ url_for('cuota.ver_cuotas', id=socio.id) }}" class="btn btn-primary">Cuotas</a>
+
                 </td>
             </tr>
             {% endfor %}

@@ -4,10 +4,10 @@ from models import session, Cuota, Socio
 cuota_bp = Blueprint('cuota', __name__)
 
 # Ruta para ver cuotas de un socio
-@cuota_bp.route('/cuotas/<int:id_socio>')
-def ver_cuotas(id_socio):
-    socio = session.query(Socio).get(id_socio)
-    return render_template('cuotas.html', socio=socio)
+@cuota_bp.route('/cuotas/<int:id>')
+def ver_cuotas(id):
+    socio = session.query(Socio).get(id)
+    return render_template('ver_cuotas.html', socio=socio)
 
 # Ruta para listar todas las cuotas
 @cuota_bp.route('/cuotas_lista')
@@ -16,9 +16,12 @@ def listar_cuotas():
     return render_template('cuotas_lista.html', cuotas=cuotas)
 
 # Ruta para agregar una cuota
-@cuota_bp.route('/cuota/agregar/<int:id_socio>', methods=['GET', 'POST'])
-def agregar_cuota(id_socio):
+@cuota_bp.route('/cuota/agregar/<int:id>', methods=['GET', 'POST'])
+def agregar_cuota(id):
     if request.method == 'POST':
+        socio = session.query(Socio).get(id_socio)
+
+
         monto = request.form['monto']
         fecha_vencimiento = request.form['fecha_vencimiento']
         nueva_cuota = Cuota(id_socio=id_socio, monto=monto, fecha_vencimiento=fecha_vencimiento)
@@ -26,3 +29,4 @@ def agregar_cuota(id_socio):
         session.commit()
         return redirect(url_for('cuota.ver_cuotas', id_socio=id_socio))
     return render_template('agregar_cuota.html', id_socio=id_socio)
+
