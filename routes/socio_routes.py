@@ -32,6 +32,8 @@ def insertar_socios(socios_nuevos):
 @socio_bp.route('/socios')
 def listar_socios():
     socios = session.query(Socio).all()
+    if not socios:
+        socios = {}
     return render_template('socios.html', socios=socios)
 
 # Ruta para agregar un socio
@@ -103,9 +105,13 @@ def cargar_csv():
         # Remover filas duplicadas basadas en la columna 'id' en el CSV
         datos = datos.drop_duplicates(subset=['id'])
 
-        # Reemplazar NaN con None en las columnas 'email' y 'phone'
+        # Si 'nro_documento' no está en las columnas, asignar el valor de 'id' a 'nro_documento'
+        if 'nro_documento' not in datos.columns:
+            datos['nro_documento'] = datos['id']  # Asigna el valor de 'id' a 'nro_documento'
+        # Reemplazar NaN con None en las columnas 'nro_documento', 'email' y 'phone'
         datos['email'] = datos['email'].apply(lambda x: None if pd.isna(x) else x)
         datos['phone'] = datos['phone'].apply(lambda x: None if pd.isna(x) else x)
+        #datos['nro_documento'] = datos['nro_documento'].apply(lambda x: None if pd.isna(x) else x)
 
         ids_duplicados = []
         socios_nuevos = []
@@ -138,10 +144,11 @@ def confirmar_carga_csv():
         if str(socio['id']) not in ids_descartados
     ]
 
-    # Insertar cada socio que no fue descartado
+    # Insertar cada socio que no fue descartado tener en cuenta que se se agrega el campo nro_documento
     for socio in socios_a_insertar:
         nuevo_socio = Socio(
             id=socio['id'],
+            nro_documento=socio['nro_documento'],
             name=socio['name'],
             email=socio['email'],
             phone=socio['phone']

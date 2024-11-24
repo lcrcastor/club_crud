@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Cuotas de {{ socio.nombre }}</h2>
-<a href="{{ url_for('cuota.agregar_cuota',id(socio.id)) }}">Agregar Cuota</a>
+<h2>Cuotas de </h2> 
+<p>Socio : {{ socio.name }} {{ socio.id }} </p>
+<a href="{{ url_for('cuota.agregar_cuota', id=socio.id) }}">Agregar Cuota</a>
+
+<p>Cantidad de cuotas: {{ cuotas | length }}</p>
+
 <table border="1">
     <tr>
         <th>ID Cuota</th>
@@ -10,8 +14,9 @@
         <th>Fecha de Vencimiento</th>
         <th>Estado</th>
     </tr>
-    {% for cuota in socio.cuotas %}
+    {% for cuota in cuota %}
     <tr>
+        <td>{{ cuota.id_socio }}</td>
         <td>{{ cuota.id_cuota }}</td>
         <td>{{ cuota.monto }}</td>
         <td>{{ cuota.fecha_vencimiento }}</td>
