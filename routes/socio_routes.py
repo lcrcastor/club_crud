@@ -12,6 +12,7 @@ def insertar_socios(socios_nuevos):
     for fila in socios_nuevos:
         nuevo_socio = Socio(
             id=fila['id'],
+            nro_documento=fila['nro_documento'],
             name=fila['name'],
             email=fila['email'],
             phone=fila['phone']
@@ -25,7 +26,6 @@ def insertar_socios(socios_nuevos):
             flash(f'Socio con ID {fila["id"]} ya existe y no fue agregado.', 'info')
     flash("Datos del CSV procesados exitosamente", "success")
     return redirect(url_for('socio.listar_socios'))
-
 
 
 # Ruta para listar socios
@@ -106,16 +106,20 @@ def cargar_csv():
         datos = datos.drop_duplicates(subset=['id'])
 
         # Si 'nro_documento' no está en las columnas, asignar el valor de 'id' a 'nro_documento'
-        if 'nro_documento' not in datos.columns:
-            datos['nro_documento'] = datos['id']  # Asigna el valor de 'id' a 'nro_documento'
+        #if 'nro_documento' not in datos.columns:
+        #    datos['nro_documento'] = datos['id']  # Asigna el valor de 'id' a 'nro_documento'
         # Reemplazar NaN con None en las columnas 'nro_documento', 'email' y 'phone'
+        
         datos['email'] = datos['email'].apply(lambda x: None if pd.isna(x) else x)
         datos['phone'] = datos['phone'].apply(lambda x: None if pd.isna(x) else x)
-        #datos['nro_documento'] = datos['nro_documento'].apply(lambda x: None if pd.isna(x) else x)
+        datos['nro_documento'] = datos['id'].apply(lambda x: None if pd.isna(x) else x)
 
         ids_duplicados = []
         socios_nuevos = []
         
+        print("contenido de datos:")
+        print(datos)
+        print("---------------------------------------")
         for _, fila in datos.iterrows():
             # Verificar si el socio con el mismo `id` ya existe en la base de datos
             socio_existente = db_session.query(Socio).filter_by(id=fila['id']).first()
@@ -158,4 +162,3 @@ def confirmar_carga_csv():
     session.commit()
     flash("Datos del CSV procesados exitosamente", "success")
     return redirect(url_for('socio.listar_socios'))
-
